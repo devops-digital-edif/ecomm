@@ -1,16 +1,24 @@
 name: docker deployment
 on: workflow_dispatch
 jobs:
-  deploy:
+  build:
     runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2   
-      - name: print work directory
-        run: pwd && ls
       - name: docker build
-        run: docker build -t ecomm .
+        run: docker build -t ${{ vars.DOCKER_USERNAME }}/myecomm .
+      - name: Docker Login
+        uses: docker/login-action@v3.4.0
+        with:
+          registry: ${{ vars.DOCKER_USERNAME }}/myecomm
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: push image
+        run: docker push ${{ vars.DOCKER_USERNAME }}/myecomm
+      - name: remove images
+        run: docker rmi ${{ vars.DOCKER_USERNAME }}/myecomm
       - name: run container
-        run: docker container run -dt --name web -p 8080:80 ecomm
+        run: docker container run -dt --name web -p 8080:80 ${{ vars.DOCKER_USERNAME }}/myecomm
       - name: list containers
         run: docker container ls -a
