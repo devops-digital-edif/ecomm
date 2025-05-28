@@ -9,7 +9,7 @@ jobs:
       - name: print work directory
         run: pwd && ls
       - name: docker build
-        run: cd ecomm && docker build -t ecomm .
+        run: docker build -t ecomm .
       - name: run container
         run: docker container run -dt --name web -p 8080:80 ecomm
       - name: list containers
