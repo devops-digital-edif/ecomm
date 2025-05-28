@@ -14,6 +14,13 @@ jobs:
         run: docker push ${{ vars.DOCKER_USERNAME }}/myecomm
       - name: remove images
         run: docker rmi ${{ vars.DOCKER_USERNAME }}/myecomm
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: remove old container container
+        run: docker container rm -f web
       - name: run container
         run: docker container run -dt --name web -p 8080:80 ${{ vars.DOCKER_USERNAME }}/myecomm
       - name: list containers
