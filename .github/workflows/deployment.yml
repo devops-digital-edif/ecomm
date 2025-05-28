@@ -1,0 +1,14 @@
+name: docker deployment
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2      
+      - name: docker build
+        run: cd ecomm && docker build -t ecomm .
+      - name: run container
+        run: docker container run -dt --name web -p 8080:80 ecomm
+      - name: list containers
+        run: docker container ls -a
